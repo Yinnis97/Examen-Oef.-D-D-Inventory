@@ -15,6 +15,20 @@ void Usage()
 }
 
 
+void isplayerencumbered(float w,float mw)
+{
+  printf("Total Weight Player : %0.2f lbs\n",w);
+  printf("Max Weight Player   : %0.2f lbs\n",mw);
+  
+  if(w > mw)
+  {
+    printf("Player is Encumbered!\n");
+  }
+  else
+  {
+    printf("Player is not Encumbered!\n");
+  }
+}
 
 
 

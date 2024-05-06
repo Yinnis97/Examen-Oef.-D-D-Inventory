@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
  }
 
 float MaxWeight = 0;
-float totalWeight = 0;
+float TotalWeight = 0;
 char campFile[20] = "";
 
 
@@ -107,9 +107,9 @@ for(int i = 1 ; i < argc ; i++)
     else 
     {
      int k = 1;
+     
      while(i < argc)
      {
-      struct Item item[10];
       char buffer[1024];
       char *parsing = NULL;
       FILE *file = fopen(argv[i], "r");
@@ -128,7 +128,7 @@ for(int i = 1 ; i < argc ; i++)
 
         }
         fclose(file);
-        printf("Loaded file\n\n");
+        printf("\nItem %d :\n\n",k);
         
       }
   
@@ -136,10 +136,22 @@ for(int i = 1 ; i < argc ; i++)
       printf("Price: %d%s\n", item[k].price.Quantity ,item[k].price.unit);
       printf("Weight: %.2f lbs\n", item[k].weight);
       k++;
+      player.numItems = &k;
      }
+      printf("\n");
     }
     
   }
+
+  //------ Berekenen van het totale gewicht van de speler en kijken of hij encumbered is -----
+  
+  for(int w = 1 ; w < *player.numItems ; w++ )
+    {
+      TotalWeight = TotalWeight + item[w].weight;
+    }
+  isplayerencumbered(TotalWeight, MaxWeight);
+
+ //--------------------------------------------------------------------------------------------
   return 0;
 }
 

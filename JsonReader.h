@@ -14,7 +14,7 @@ struct Item
 
     float weight;
     
-}item[10];
+}item[20];
 
 // Geeft / zoekt de waarde van een spec (Weigh,Price,Name).
 char* extractValue(char *jsonString, char *key) 

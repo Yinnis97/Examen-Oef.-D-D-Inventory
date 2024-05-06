@@ -6,9 +6,9 @@ struct Speler
 {
  struct Item;
  int *numItems;
- float *MaxWeight;
+ float *Weight;
  struct Coins;
-};
+}player;
 
 
 struct Coins

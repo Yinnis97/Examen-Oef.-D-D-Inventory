@@ -13,6 +13,7 @@ struct Item
     }price;
 
     float weight;
+    struct Item *next; 
     
 }item[20];
 

@@ -16,11 +16,13 @@ int main(int argc, char *argv[])
    return 1;
  }
 
-float MaxWeight = 0;
-float TotalWeight = 0;
+float MaxWeight = 0;    //max gewicht voordat men encumbered is.
+float TotalWeight = 0;  //Totale gewicht van alle items.
 char campFile[20] = "";
-int TotalItems = 1;
-
+int TotalItems = 1;     //Aantal items dat men heeft.
+int Amount = 0;         //Aantal stuks van een specifiek item.
+char buffer[1024];
+  
 for(int i = 1 ; i < argc ; i++)
   {
     //Checken voor weight.
@@ -28,7 +30,7 @@ for(int i = 1 ; i < argc ; i++)
     {
       MaxWeight = atof(argv[i + 1]);
       i++;
-      printf("%s\n",argv[i]);
+      printf("Weight : %s lbs\n",argv[i]);
     }
       
     //--------------------------------------------------------------------------------------------
@@ -94,11 +96,11 @@ for(int i = 1 ; i < argc ; i++)
           
         }
       
-      printf("%dpp\n",coins.pp);
-      printf("%dgp\n",coins.gp);
-      printf("%dep\n",coins.ep);
-      printf("%dsp\n",coins.sp);
-      printf("%dcp\n",coins.cp);
+      printf("Platinum Coins : %dpp\n",coins.pp);
+      printf("Gold Coins     : %dgp\n",coins.gp);
+      printf("Electrum Coins : %dep\n",coins.ep);
+      printf("Silver Coins   : %dsp\n",coins.sp);
+      printf("Copper Coins   : %dcp\n",coins.cp);
 
     }
     //--------------------------------------------------------------------------------------------
@@ -119,7 +121,7 @@ for(int i = 1 ; i < argc ; i++)
         while(i < argc)
         {
           //Checken voor het aantal van een specifiek item.
-           int Amount = atoi(argv[i]);
+           Amount = atoi(argv[i]);
            if( atoi(argv[i]) != 0 )
            {
              Amount = atoi(argv[i]);
@@ -130,7 +132,6 @@ for(int i = 1 ; i < argc ; i++)
              Amount = 1;
            }
           //Check de files die geopend moeten worden.
-         char buffer[1024];
          char *parsing = NULL;
          FILE *file = fopen(argv[i], "r");
          if (file) 
@@ -151,10 +152,12 @@ for(int i = 1 ; i < argc ; i++)
            printf("\nItem %d :\n\n",TotalItems);
 
          }
-     
+
+          //bij meerdere items ook de totale weight en prijs veranderen.
           if(Amount > 1)
           {
             item[TotalItems].weight = item[TotalItems].weight * Amount;
+            item[TotalItems].price.Quantity = item[TotalItems].price.Quantity * Amount;
           }
          printf("Name   : %s\n", item[TotalItems].name);
          printf("Price  : %d%s\n", item[TotalItems].price.Quantity ,item[TotalItems].price.unit);
@@ -183,8 +186,71 @@ for(int i = 1 ; i < argc ; i++)
 
   
  //--------------------------------------------------------------------------------------------
+while(1)
+   {
+      
+    
+  printf( "Wat wilt u doen?\n" );
+  printf( "Een nieuw item toevoegen? ""AddItem""\n" );
+  printf( "Een item naar camp verplaatsen? ""MoveCamp""\n\n" );
+  
+  char input[20] = {0};
+  fgets(input, sizeof(input), stdin);
+  input[strcspn(input, "\n")] = 0;
+     
+  if(strcmp(input,"AddItem") == 0)
+  {
+   
+    printf("Gelieve een .json file in te geven.\n\n");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+    
+        
+         char *parsing = NULL;
+         FILE *file = fopen(input, "r");
+         if (file) 
+         {
+           while (!feof(file)) 
+           {
+             if (fgets(buffer, sizeof(buffer), file) == NULL) 
+             {
+               break;
+             }
+             parsing = buffer;
+             parseJSON(parsing, &item[TotalItems]);
+           }
+           fclose(file);
+          
+         TotalItems++;
+         player.numItems = &TotalItems;
+         item[TotalItems].next = &item[TotalItems+1];
 
+           for(int k = 1 ; k < TotalItems ; k++)
+           {
+            printf("\nItem %d :\n\n",k);
+             printf("Name   : %s\n", item[k].name);
+             printf("Price  : %d%s\n", item[k].price.Quantity ,item[k].price.unit);
+             printf("Weight : %.2f lbs\n", item[k].weight);
+           }
 
+        }
+    
+    TotalWeight = TotalWeight + item[TotalItems-1].weight;
+    isplayerencumbered(TotalWeight, MaxWeight); 
+    printf("\n"); 
+
+      }
+
+     
+  else if(strcmp(input,"MoveCamp") == 0)
+  {
+    printf("movecamp\n");
+  }
+  else
+  {
+    printf("Gelieve AddItem of MoveCamp in te geven.\n");
+  }
+ }
   
   return 0;
 }

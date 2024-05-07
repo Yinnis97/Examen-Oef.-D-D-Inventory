@@ -187,13 +187,15 @@ for(int i = 1 ; i < argc ; i++)
   
  //--------------------------------------------------------------------------------------------
 while(1)
-   {
+{
       
-    
+  printf("-------------------------------------------------------\n");
   printf( "Wat wilt u doen?\n" );
-  printf( "Een nieuw item toevoegen? ""AddItem""\n" );
-  printf( "Een item naar camp verplaatsen? ""MoveCamp""\n\n" );
-  
+  printf( "Een nieuw item toevoegen : Type \"AddItem\".\n" );
+  printf( "Een item naar camp verplaatsen : Type \"MoveCamp\".\n" );
+  printf( "Ik ben klaar : Type \"Klaar\".\n" );
+  printf("-------------------------------------------------------\n");
+     
   char input[20] = {0};
   fgets(input, sizeof(input), stdin);
   input[strcspn(input, "\n")] = 0;
@@ -201,7 +203,7 @@ while(1)
   if(strcmp(input,"AddItem") == 0)
   {
    
-    printf("Gelieve een .json file in te geven.\n\n");
+    printf("Gelieve een .json file in te geven.\n");
     fgets(input, sizeof(input), stdin);
     input[strcspn(input, "\n")] = 0;
     
@@ -219,6 +221,7 @@ while(1)
              parsing = buffer;
              parseJSON(parsing, &item[TotalItems]);
            }
+      
            fclose(file);
           
          TotalItems++;
@@ -234,6 +237,10 @@ while(1)
            }
 
         }
+        else
+         {
+          continue;
+         }
     
     TotalWeight = TotalWeight + item[TotalItems-1].weight;
     isplayerencumbered(TotalWeight, MaxWeight); 
@@ -241,16 +248,74 @@ while(1)
 
       }
 
-     
+  //Verplaatsen van item naar camp
   else if(strcmp(input,"MoveCamp") == 0)
   {
-    printf("movecamp\n");
+    printf("Geef de .json file die je naar camp wilt sturen.\n");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = 0;
+     char str;
+     char *tempname; 
+     FILE *file = fopen(input, "r");
+     if (file) 
+     {
+       while (!feof(file)) 
+       {
+         if (fgets(buffer, sizeof(buffer), file) == NULL) 
+         {
+           break;
+         }
+         
+         int len = fread(buffer, 1, sizeof(buffer), file); 
+         
+         tempname = extractValue(buffer, "\"name\"");
+   
+       }
+
+       fclose(file);
+     }
+    
+    file = fopen(campFile, "w");
+     if (file) 
+     {
+       //fprintf( file,"%s",buffer);
+       fputs(buffer, file); 
+       fclose(file);
+       printf("-------------------------------------------------------\n");
+       printf("%s verplaatst naar %s\n",input,campFile);
+       printf("-------------------------------------------------------\n");
+     }
+    
+    for(int i = 1 ; 1 < TotalItems ; i++)
+      {
+        
+        if(strcmp(tempname,item[i].name))
+        {
+          
+          TotalWeight = TotalWeight - item[i-1].weight;
+          isplayerencumbered(TotalWeight, MaxWeight); 
+          for(int i = i ; i < TotalItems ; i++)
+            { 
+              item[i] = item[i+1];
+            }
+          TotalItems = TotalItems - 1;
+          player.numItems = &TotalItems;
+        }
+      }
   }
+
+  else if (strcmp(input,"Klaar") == 0)
+  {
+    break;
+  }
+     
   else
   {
     printf("Gelieve AddItem of MoveCamp in te geven.\n");
   }
  }
+
+
   
   return 0;
 }

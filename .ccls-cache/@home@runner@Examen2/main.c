@@ -5,6 +5,7 @@
 #include "Structs.h"
 #include "JsonReader.h"
 
+void ShowItem(struct Item item, int i);
 
 int main(int argc, char *argv[]) 
 {
@@ -104,13 +105,13 @@ for(int i = 1 ; i < argc ; i++)
 
     }
     //--------------------------------------------------------------------------------------------
-    //Checken voor Camp.
+    //Checken voor Camp File Name.
       
     else if(strcmp(argv[i], "-c") == 0)
     {
       strcpy(campFile, argv[i + 1]);
       i++;
-       printf("%s\n",argv[i]);
+       printf("Camp File Name : %s\n",argv[i]);
     }
       
     //--------------------------------------------------------------------------------------------
@@ -193,6 +194,7 @@ while(1)
   printf( "Wat wilt u doen?\n" );
   printf( "Een nieuw item toevoegen : Type \"AddItem\".\n" );
   printf( "Een item naar camp verplaatsen : Type \"MoveCamp\".\n" );
+  printf( "Door de lijst met objecten stappen : Type \"Scroll\"\n");
   printf( "Ik ben klaar : Type \"Klaar\".\n" );
   printf("-------------------------------------------------------\n");
      
@@ -230,10 +232,7 @@ while(1)
 
            for(int k = 1 ; k < TotalItems ; k++)
            {
-            printf("\nItem %d :\n\n",k);
-             printf("Name   : %s\n", item[k].name);
-             printf("Price  : %d%s\n", item[k].price.Quantity ,item[k].price.unit);
-             printf("Weight : %.2f lbs\n", item[k].weight);
+             ShowItem(item[k] , k);
            }
 
         }
@@ -275,10 +274,9 @@ while(1)
        fclose(file);
      }
     
-    file = fopen(campFile, "w");
+    file = fopen(campFile, "a");
      if (file) 
      {
-       //fprintf( file,"%s",buffer);
        fputs(buffer, file); 
        fclose(file);
        printf("-------------------------------------------------------\n");
@@ -286,24 +284,85 @@ while(1)
        printf("-------------------------------------------------------\n");
      }
     
-    for(int i = 1 ; 1 < TotalItems ; i++)
-      {
+    for(int i = 1 ; i < TotalItems ; i++)
+      { 
         
-        if(strcmp(tempname,item[i].name))
-        {
-          
-          TotalWeight = TotalWeight - item[i-1].weight;
+        printf("-----%s-----\n",tempname);
+        
+        if(strcmp(tempname,item[i].name) == 0)
+        { 
+          printf("%s",item[i].name);
+          printf("i = %d\n",i);
+       
+           
+          TotalWeight = TotalWeight - item[i].weight;
           isplayerencumbered(TotalWeight, MaxWeight); 
-          for(int i = i ; i < TotalItems ; i++)
+          
+         while(i < TotalItems)
             { 
-              item[i] = item[i+1];
+              strcpy(item[i].name , item[i+1].name);
+              item[i].price.Quantity = item[i+1].price.Quantity;
+              strcpy(item[i].price.unit , item[i+1].price.unit);
+              item[i].weight = item[i+1].weight;
+              i++;
             }
           TotalItems = TotalItems - 1;
           player.numItems = &TotalItems;
         }
       }
+     for(int k = 1 ; k < TotalItems; k++)
+     {
+       ShowItem(item[k] ,  k);
+     }
   }
+    
+  else if (strcmp(input,"Scroll") == 0)
+  {
+    /*
+   for(int i = 1 ; 1 < TotalItems ; i++)
+     {
+      struct Item *Item = (struct Item *)malloc(sizeof(struct Item));
+      item[i].next = &item[i+1];
+     }
+   */
+    int i = 1;
+     printf("-------------------------------------------------------\n");
+     ShowItem(item[i] ,  i);
+     printf("-------------------------------------------------------\n");
+    while(strcmp(item[i].name, "\0"))
+     {  
+        printf("Laat Volgende Item zien \"Volgend\"\n");
+        printf("Laat Vorig Item zien \"Vorig\"\n");
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = 0;
+    
+       if(strcmp(input,"Volgend") == 0)
+       {
+         i++;
+         ShowItem(item[i] ,  i);
+       }
+       else if (strcmp(input,"Vorig") == 0)
+       {
+         if(i == 1)
+         {
+           ShowItem(item[i] ,  i);
+         }
+         else
+         {
+           i--;
+           ShowItem(item[i] ,  i);
+         }
+       }
+         
+       else
+        {
+          continue;;
+        }
 
+     }
+    
+  }
+    
   else if (strcmp(input,"Klaar") == 0)
   {
     break;
@@ -311,7 +370,7 @@ while(1)
      
   else
   {
-    printf("Gelieve AddItem of MoveCamp in te geven.\n");
+    printf("Gelieve een correcte input in te geven.\n");
   }
  }
 
@@ -321,3 +380,14 @@ while(1)
 }
 
 
+
+void ShowItem(struct Item item , int i)
+{
+  printf("-------------------------------------------------------\n");
+  printf("Item %d \n",i); 
+  printf("Item Name   : %s \n",item.name);
+  printf("Item Price  : %d %s \n",item.price.Quantity,item.price.unit);   
+  printf("Item Weight : %.2f \n",item.weight);
+  printf("-------------------------------------------------------\n");
+
+}

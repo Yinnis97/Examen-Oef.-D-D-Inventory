@@ -277,8 +277,12 @@ while(1)
     
     file = fopen(campFile, "a");
      if (file) 
-     {
-       fputs(buffer, file); 
+     { 
+       fputs("\n-------------------------------------------------------\n",file);
+       fputs(tempname,file);
+       fputs("\n-------------------------------------------------------\n",file);
+       fputs(buffer, file);
+       
        fclose(file);
        printf("-------------------------------------------------------\n");
        printf("%s verplaatst naar %s\n",input,campFile);
@@ -316,17 +320,8 @@ while(1)
     
   else if (strcmp(input,"Scroll") == 0)
   {
-    /*
-   for(int i = 1 ; 1 < TotalItems ; i++)
-     {
-      struct Item *Item = (struct Item *)malloc(sizeof(struct Item));
-      item[i].next = &item[i+1];
-     }
-   */
     int i = 1;
-     printf("-------------------------------------------------------\n");
-     ShowItem(item[i] ,  i);
-     printf("-------------------------------------------------------\n");
+    ShowItem(item[i] ,  i);
     while(strcmp(item[i].name, "\0"))
      {  
         printf("Laat Volgende Item zien \"Volgend\"\n");
@@ -356,13 +351,12 @@ while(1)
         {
           continue;;
         }
-
-     }
-    
+     }  
   }
     
   else if (strcmp(input,"Klaar") == 0)
   {
+    printf("Success on your journey!\n");
     break;
   }
      
@@ -371,8 +365,6 @@ while(1)
     printf("Gelieve een correcte input in te geven.\n");
   }
  }
-
-
   
   return 0;
 }
@@ -386,7 +378,7 @@ void ShowItem(struct Item item , int i)
   printf("Item %d \n",i); 
   printf("Item Name   : %s \n",item.name);
   printf("Item Price  : %d %s \n",item.price.Quantity,item.price.unit);   
-  printf("Item Weight : %.2f \n",item.weight);
+  printf("Item Weight : %.2f lbs\n",item.weight);
   printf("-------------------------------------------------------\n");
 
 }

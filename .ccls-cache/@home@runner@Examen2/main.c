@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Functions.h"
 #include "Structs.h"
 #include "JsonReader.h"
 
 void ShowItem(struct Item item, int i);
+void Usage(void);
+void isplayerencumbered(float w,float mw);
 
 int main(int argc, char *argv[]) 
 {
@@ -286,9 +287,6 @@ while(1)
     
     for(int i = 1 ; i < TotalItems ; i++)
       { 
-        
-        printf("-----%s-----\n",tempname);
-        
         if(strcmp(tempname,item[i].name) == 0)
         { 
           printf("%s",item[i].name);
@@ -379,7 +377,8 @@ while(1)
   return 0;
 }
 
-
+//--------------------------------------------------------------------------------------------
+//Functions
 
 void ShowItem(struct Item item , int i)
 {
@@ -390,4 +389,32 @@ void ShowItem(struct Item item , int i)
   printf("Item Weight : %.2f \n",item.weight);
   printf("-------------------------------------------------------\n");
 
+}
+
+
+void Usage()
+{
+  printf("Usage:   Inventory.exe equipment-files [number-of-items] [-w max-weight] [-m money] [-c camp-file]\n"); 
+  printf("\n");
+  printf("Options:\n");
+  printf("number-of-items      Optional per file to define the number in the inventory\n");
+  printf("-w max-weight        Maximum weight before becoming encumbered\n");
+  printf("-m money             List of coins and types (cp, sp, ep, gp, pp)\n");
+  printf("-c camp-file         Optional camp file for all discovered items during play that stay in camp\n");
+}
+
+
+void isplayerencumbered(float w,float mw)
+{
+  printf("Total Weight Player : %0.2f lbs\n",w);
+  printf("Max Weight Player   : %0.2f lbs\n",mw);
+
+  if(w > mw)
+  {
+    printf("Player is Encumbered!\n");
+  }
+  else
+  {
+    printf("Player is not Encumbered!\n");
+  }
 }

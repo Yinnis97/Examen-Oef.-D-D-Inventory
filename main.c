@@ -4,6 +4,9 @@
 #include "Structs.h"
 #include "JsonReader.h"
 
+#define peace return
+#define out 0
+
 void ShowItem(struct Item item, int i);
 void Usage(void);
 void isplayerencumbered(float w,float mw);
@@ -44,10 +47,10 @@ for(int i = 1 ; i < argc ; i++)
       for(int j = i ; j < argc ; j++)
         {
 
-          char *endptr;
+          char *endptr; 
           long num = strtol(argv[j+1], &endptr, 10);
-          
-          if(*endptr == 'p' && *endptr != '\0')
+          //endptr verwijst naar het eerst volgende character
+          if(*endptr == 'p')
           {
             char *temp = argv[j+1];
             coins.pp = atoi(temp);
@@ -56,7 +59,7 @@ for(int i = 1 ; i < argc ; i++)
             i++;
           }
 
-          else if(*endptr == 'g' && *endptr != '\0')
+          else if(*endptr == 'g')
           {
             char *temp = argv[j+1];
             coins.gp = atoi(temp);
@@ -65,7 +68,7 @@ for(int i = 1 ; i < argc ; i++)
             i++;
           }
 
-          else if(*endptr == 'e' && *endptr != '\0')
+          else if(*endptr == 'e')
           {
             char *temp = argv[j+1];
             coins.ep = atoi(temp);
@@ -74,7 +77,7 @@ for(int i = 1 ; i < argc ; i++)
             i++;
           }
 
-          else if(*endptr == 's' && *endptr != '\0')
+          else if(*endptr == 's')
           {
             char *temp = argv[j+1];
             coins.sp = atoi(temp);
@@ -83,7 +86,7 @@ for(int i = 1 ; i < argc ; i++)
             i++;
           }
             
-          else if(*endptr == 'c' && *endptr != '\0')
+          else if(*endptr == 'c')
           {
             char *temp = argv[j+1];
             coins.cp = atoi(temp);
@@ -322,7 +325,7 @@ while(1)
   {
     int i = 1;
     ShowItem(item[i] ,  i);
-    while(strcmp(item[i].name, "\0"))
+    while(strcmp(item[i].name, "\0")) //blijft items laten zien tot we bij het laatste item zijn
      {  
         printf("Laat Volgende Item zien \"Volgend\"\n");
         printf("Laat Vorig Item zien \"Vorig\"\n");
@@ -366,7 +369,7 @@ while(1)
   }
  }
   
-  return 0;
+  peace out;
 }
 
 //--------------------------------------------------------------------------------------------
